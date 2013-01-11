@@ -2,16 +2,26 @@
 ph(p(GroupeNom, GroupeVerbe)) -->
   groupe_nom(GroupeNom, Nombre, _, ClasseAgent),
   groupe_verbe(GroupeVerbe, Nombre, ClasseAgent).
+
 groupe_nom(gn(Determinant, Nom), Nombre, Genre, Classe) -->
   determinant(Determinant, Nombre, Genre),
   nom(Nom, Nombre, Genre, Classe).
-groupe_nom(gn(Nom_Propre), sing, Genre, actif) -->
- nomp(Nom_Propre, Genre).
+groupe_nom(gn(Nom_Propre), sing, Genre, anime) -->
+  nomp(Nom_Propre, Genre).
+groupe_nom(gn(GroupeNom1, Preposition, Nom), Nombre, Genre, Classe) -->
+  groupe_nom(GroupeNom1, Nombre, Genre, Classe),
+  preposition(Preposition, PrepNombre),
+  nom(Nom, PrepNombre, _, _).
+groupe_nom(gn(GroupeNom1, Preposition, Nom), Nombre, Genre, Classe) -->
+  groupe_nom(GroupeNom1, Nombre, Genre, Classe),
+  preposition(Preposition, _),
+  nomp(Nom, _).
+
+groupe_verbe(gv(Verbe), Nombre, ClasseAgent) -->
+  verbe_intransitif(Verbe, Nombre, ClasseAgent).
 groupe_verbe(gv(Verbe, GroupeNom), Nombre, ClasseAgent) -->
-  verbe(Verbe, Nombre, ClasseAgent, ClasseObjet),
+  verbe_transitif(Verbe, Nombre, ClasseAgent, ClasseObjet),
   groupe_nom(GroupeNom, _, _, ClasseObjet).
-groupe_verbe(gv(Verbe), Nombre, ClasseAgent, ClasseObjet) -->
-  verbe(Verbe, Nombre, ClasseAgent, ClassObjet).
 
 % partie lexicale:
 determinant(d(Determinant), Nombre, Genre) -->
@@ -23,33 +33,55 @@ nom(n(Nom), Nombre, Genre, Classe) -->
 nomp(np(NomPropre), Genre) -->
   [NomPropre],
   {est_np(NomPropre, Genre)}.
-verbe(v(Verbe), Nombre, ClassAgent, ClassObjet) --> 
+verbe_intransitif(v(Verbe), Nombre, ClasseAgent) --> 
   [Verbe],
-  {est_verbe(Verbe, Nombre, ClasseAgent, ClasseObjet)}.
-
+  {est_verbe(Verbe, Nombre, ClasseAgent, _, intransitif)}.
+verbe_transitif(v(Verbe), Nombre, ClasseAgent, ClasseObjet) --> 
+  [Verbe],
+  {est_verbe(Verbe, Nombre, ClasseAgent, ClasseObjet, transitif)}.
+preposition(prep(Preposition), Nombre) -->
+  [Preposition],
+  {est_preposition(Preposition, Nombre)}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                    Dictionnaire
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-est_np(Nom, sing, Genre) :-
+est_np(Nom, Genre) :-
   personne(Nom, Genre).
 personne(jean, masc).
 personne(marie, fem).
 personne(claude, masc).
 
-est_nom(Nom, Genre, Nombre, Classe) :-
-  nom(Nom, Genre, Nombre, Classe).
-nom(fruit, masc, sing, comestible).
-nom(pomme, masc, sing, comestible).
-nom(orange, fem, sing, comestible).
-nom(jus, masc, sing, comestible).
-nom(personne, fem, sing, anime).
-nom(etudiant, masc, sing, anime).
-nom(machine, fem, sing, _).
-nom(chanson, fem, sing, rien).
+est_nom(Nom, Nombre, Genre, Classe) :-
+  nom(Nom, Nombre, Genre, Classe).
+nom(fruit, sing, masc, comestible).
+nom(pomme, sing, fem, comestible).
+nom(orange, sing, fem, comestible).
+nom(jus,sing, masc, comestible).
+nom(personne, sing, fem, anime).
+nom(etudiant, sing, masc, anime).
+nom(machine, sing, fem, _).
+nom(chanson, sing, fem, rien).
 
-est_verbe(Verbe, Nombre, ClasseAgent, ClasseObjet) :-
-  verbe(Verbe, Nombre, ClasseAgent, ClasseObjet).
-verbe(mange, sing, anime, comestible).
-verbe(aime, sing, anime, _).
+est_verbe(Verbe, Nombre, ClasseAgent, ClasseObjet, Type) :-
+  verbe(Verbe, Nombre, ClasseAgent, ClasseObjet, Type).
+verbe(demande, sing, anime, _, transitif).
+verbe(donne, sing, anime, _, transitif).
+verbe(mange, sing, anime, comestible, transitif).
+verbe(marche, sing, anime, _, intransitif).
+verbe(chante, sing, anime, _, _).
+
+
+est_det(Determinant, Genre, Nombre) :-
+  det(Determinant, Genre, Nombre).
+det(un, sing, masc).
+det(une, sing, fem).
+det(des, plur, _).
+det(les, plur, _).
+
+est_preposition(Preposition, Nombre) :-
+  preposition(Preposition, Nombre).
+preposition(a, sing).
+preposition(de, sing).
+preposition(des, plur).
