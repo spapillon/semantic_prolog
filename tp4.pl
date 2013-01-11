@@ -35,10 +35,10 @@ nomp(np(NomPropre), Genre) -->
   {est_np(NomPropre, Genre)}.
 verbe_intransitif(v(Verbe), Nombre, ClasseAgent) --> 
   [Verbe],
-  {est_verbe(Verbe, Nombre, ClasseAgent, _, intransitif)}.
+  {est_verbe_intransitif(Verbe, Nombre, ClasseAgent)}.
 verbe_transitif(v(Verbe), Nombre, ClasseAgent, ClasseObjet) --> 
   [Verbe],
-  {est_verbe(Verbe, Nombre, ClasseAgent, ClasseObjet, transitif)}.
+  {est_verbe_transitif(Verbe, Nombre, ClasseAgent, ClasseObjet)}.
 preposition(prep(Preposition), Nombre) -->
   [Preposition],
   {est_preposition(Preposition, Nombre)}.
@@ -64,13 +64,17 @@ nom(etudiant, sing, masc, anime).
 nom(machine, sing, fem, _).
 nom(chanson, sing, fem, rien).
 
-est_verbe(Verbe, Nombre, ClasseAgent, ClasseObjet, Type) :-
-  verbe(Verbe, Nombre, ClasseAgent, ClasseObjet, Type).
-verbe(demande, sing, anime, _, transitif).
-verbe(donne, sing, anime, _, transitif).
-verbe(mange, sing, anime, comestible, transitif).
-verbe(marche, sing, anime, _, intransitif).
-verbe(chante, sing, anime, _, _).
+est_verbe_transitif(Verbe, Nombre, ClasseAgent, ClasseObjet) :-
+  verbe_transitif(Verbe, Nombre, ClasseAgent, ClasseObjet).
+verbe_transitif(demande, sing, anime, _).
+verbe_transitif(donne, sing, anime, _).
+verbe_transitif(mange, sing, anime, comestible).
+verbe_transitif(marche, sing, anime, _).
+
+est_verbe_intransitif(Verbe, Nombre, ClasseAgent) :-
+  verbe_intransitif(Verbe, Nombre, ClasseAgent).
+verbe_intransitif(marche, sing, anime).
+verbe_intransitif(chante, sing, anime).
 
 
 est_det(Determinant, Genre, Nombre) :-
