@@ -1,16 +1,13 @@
-% partie syntaxique:
-% partie lexicale:
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                    Analyse Syntaxique
+%                            Analyse Syntaxique
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Phrase avec preposition
-ph(semantique(SemantiqueNom, SemantiqueVerbe, SemantiquePreposition)) -->
+analyse([SemantiqueNom, SemantiqueVerbe, SemantiquePreposition)) -->
   groupe_nom(Nombre, _, SemantiqueNom),
   groupe_verbe(Nombre, SemantiqueNom, SemantiqueVerbe, SemantiquePreposition).
 
 % Phrase sans preposition
-ph(semantique(SemantiqueNom, SemantiqueVerbe)) -->
+analyse([SemantiqueNom, SemantiqueVerbe]) -->
   groupe_nom(Nombre, _, SemantiqueNom),
   groupe_verbe(Nombre, SemantiqueNom, SemantiqueVerbe).
 
@@ -44,7 +41,7 @@ groupe_verbe(Nombre, Agent, SemantiqueVerbe, SemantiquePreposition) -->
   groupe_nom(NombrePrep, _, ObjetPrep).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                    Analyse Lexicale
+%                             Analyse Lexicale
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Determinant avec nombre et genre.
 determinant(Nombre, Genre) -->
@@ -78,7 +75,7 @@ preposition(Nombre, Agent, Objet, SemantiquePrep) -->
   {est_preposition(Preposition, Nombre, Agent, Objet, SemantiquePrep)}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                    Analyse Semantique
+%                           Analyse Semantique
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 anime(jean).
 anime(personne).
@@ -92,10 +89,10 @@ fruit(X) :- pomme(X).
 fruit(X) :- orange(X).
 
 anime(X) :- personne(X).
-etudiant(X) :- personne(X).
+personne(X) :- etudiant(X).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                    Dictionnaire
+%                             Dictionnaire
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
  
 est_np(jean, masc, jean).
