@@ -86,19 +86,8 @@ personne(claude).
 
 comestible(pomme).
 comestible(orange).
-comestible(fruitd).
+comestible(fruit).
 
-:-dynamic(receveur/2).
-:-dynamic(aimer/2).
-:-dynamic(demander/2).
-:-dynamic(manger/2).
-:-dynamic(constituant/2).
-
-receveur(nil,nil).
-aimer(nil,nil).
-demander(nil,nil).
-manger(nil,nil).
-constituant(nil,nil).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                             Dictionnaire
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -156,26 +145,30 @@ est_preposition(des, plur, X, Y, constituant(X, Y)).
 %                             Interface
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% 
+% Boucle d'interface avec l'usager.
 interface :-
   repeat,
   read(Input),
-  executer(Input).
+  executer(Input), !.
 
-encore :-
-  interface,
-  nl.
-
+% Force la sortie de la boucle d'interface.
 executer(fin).
+
+% Execute une phrase du format d'une question.
 executer([est-ce, que| Question]) :-
   analyse_question(Question),
-  encore.
+  interface.
+
+% Execute l'analyse semantique de la phrase
+% et procede a l'insertion des faits dans la
+% base de conaissance.
 executer(Input) :-
   ((analyse(Semantique, Input,[]),
   inserer_faits(Semantique));
   (write('Phrase incorrecte'), nl)),
-  encore.
+  interface.
 
+% Analyse les faits demandes dans la question.
 analyse_question(Question) :-
   analyse(Faits, Question, []),
   recherche_faits(Faits).
@@ -190,7 +183,7 @@ inserer_faits([Fait|Reste]) :-
   inserer_faits(Reste).
 
 % La listes des faits a ete completee, la reponse a la question
-% est oui!
+% est oui.
 recherche_faits([]) :-
   write(yes), nl.
 
@@ -201,3 +194,20 @@ recherche_faits([Fait|Reste]) :-
   (call(Fait),
   recherche_faits(Reste);
   write(no), nl).
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                         Definitions dynamiques 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+:-dynamic(receveur/2).
+:-dynamic(aimer/2).
+:-dynamic(demander/2).
+:-dynamic(manger/2).
+:-dynamic(constituant/2).
+
+receveur(nil,nil).
+aimer(nil,nil).
+demander(nil,nil).
+manger(nil,nil).
+constituant(nil,nil).
