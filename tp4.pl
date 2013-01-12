@@ -1,7 +1,11 @@
 % partie syntaxique:
+ph(semanqtique(SemantiqueNom, SemantiqueVerbe, SemantiquePreposition)) -->
+  groupe_nom(Nombre, _, SemantiqueNom),
+  groupe_verbe(Nombre, SemantiqueNom, SemantiqueVerbe, SemantiquePreposition).
 ph(semantique(SemantiqueNom, SemantiqueVerbe)) -->
   groupe_nom(Nombre, _, SemantiqueNom),
   groupe_verbe(Nombre, SemantiqueNom, SemantiqueVerbe).
+  
 
 groupe_nom(Nombre, Genre, SemantiqueNom) -->
   determinant(Nombre, Genre),
@@ -14,6 +18,13 @@ groupe_verbe(Nombre, Agent, SemantiqueVerbe) -->
 groupe_verbe(Nombre, Agent, SemantiqueVerbe) -->
   verbe_transitif(Nombre, Agent, Objet, SemantiqueVerbe),
   groupe_nom(_, _, Objet).
+
+groupe_verbe(Nombre, Agent, SemantiqueVerbe, SemantiquePreposition) -->
+  verbe_transitif(Nombre, Agent, Objet, SemantiqueVerbe),
+  groupe_nom(_, _, Objet),
+  preposition(NombrePrep, Objet, ObjetPrep, SemantiquePreposition),
+  groupe_nom(NombrePrep, _, ObjetPrep).
+
 
 % partie lexicale:
 determinant(Nombre, Genre) -->
