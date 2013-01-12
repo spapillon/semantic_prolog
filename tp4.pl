@@ -78,7 +78,7 @@ preposition(Nombre, Agent, Objet, SemantiquePrep) -->
   {est_preposition(Preposition, Nombre, Agent, Objet, SemantiquePrep)}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                    Dictionnaire
+%                    Analyse Semantique
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 anime(jean).
 anime(personne).
@@ -94,6 +94,9 @@ fruit(X) :- orange(X).
 anime(X) :- personne(X).
 etudiant(X) :- personne(X).
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                    Dictionnaire
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
  
 est_np(jean, masc, jean).
 est_np(marie, fem, marie).
