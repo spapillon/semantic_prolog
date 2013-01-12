@@ -2,12 +2,12 @@
 %                            Analyse Syntaxique
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Phrase avec preposition
-analyse([SemantiqueNom, SemantiqueVerbe, SemantiquePreposition)) -->
+analyse([SemantiqueVerbe, SemantiquePreposition]) -->
   groupe_nom(Nombre, _, SemantiqueNom),
   groupe_verbe(Nombre, SemantiqueNom, SemantiqueVerbe, SemantiquePreposition).
 
 % Phrase sans preposition
-analyse([SemantiqueNom, SemantiqueVerbe]) -->
+analyse([SemantiqueVerbe]) -->
   groupe_nom(Nombre, _, SemantiqueNom),
   groupe_verbe(Nombre, SemantiqueNom, SemantiqueVerbe).
 
@@ -77,20 +77,28 @@ preposition(Nombre, Agent, Objet, SemantiquePrep) -->
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                           Analyse Semantique
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-anime(jean).
-anime(personne).
-anime(etudiant).
-anime(machine).
-comestible(pomme).
-
-comestible(X) :- fruit(X).
-comestible(X) :- jus(X).
-fruit(X) :- pomme(X).
-fruit(X) :- orange(X).
 
 anime(X) :- personne(X).
-personne(X) :- etudiant(X).
 
+personne(jean).
+personne(marie).
+personne(claude).
+
+comestible(pomme).
+comestible(orange).
+comestible(fruitd).
+
+:-dynamic(receveur/2).
+:-dynamic(aimer/2).
+:-dynamic(demander/2).
+:-dynamic(manger/2).
+:-dynamic(constituant/2).
+
+receveur(nil,nil).
+aimer(nil,nil).
+demander(nil,nil).
+manger(nil,nil).
+constituant(nil,nil).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                             Dictionnaire
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -143,3 +151,53 @@ est_preposition(a, sing, X, Y, receveur(X, Y)).
 est_preposition(aux, plur, X, Y, receveur(X, Y)).
 est_preposition(de, sing, X, Y, constituant(X, Y)).
 est_preposition(des, plur, X, Y, constituant(X, Y)).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                             Interface
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% 
+interface :-
+  repeat,
+  read(Input),
+  executer(Input).
+
+encore :-
+  interface,
+  nl.
+
+executer(fin).
+executer([est-ce, que| Question]) :-
+  analyse_question(Question),
+  encore.
+executer(Input) :-
+  ((analyse(Semantique, Input,[]),
+  inserer_faits(Semantique));
+  (write('Phrase incorrecte'), nl)),
+  encore.
+
+analyse_question(Question) :-
+  analyse(Faits, Question, []),
+  recherche_faits(Faits).
+
+% Tous les faits ont etes inseres correctement.
+inserer_faits([]) :-
+  write('Les faits ont etes correctement inseres'), nl.
+
+% Insere recursivement des faits dans la base de conaissance.
+inserer_faits([Fait|Reste]) :-
+  asserta(Fait),
+  inserer_faits(Reste).
+
+% La listes des faits a ete completee, la reponse a la question
+% est oui!
+recherche_faits([]) :-
+  write(yes), nl.
+
+% Questionne recursivement la base de conaissance et tente
+% d'appeler les predicats (faits).  Si on d'eux n'est pas trouve,
+% la reponse a la question est non.
+recherche_faits([Fait|Reste]) :-
+  (call(Fait),
+  recherche_faits(Reste);
+  write(no), nl).
